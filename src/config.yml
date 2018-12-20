@@ -1,0 +1,7 @@
+database:
+    port: 27017
+    #below if quotations are not there make sure to add them around ur values
+    ip: ""
+    username: ""
+    password: ""
+    name: ""

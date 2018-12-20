@@ -1,0 +1,9 @@
+name: FreedomCore
+main: me.taahanis.freedomcore.FreedomCore
+description: Freedom with a side of mongo
+version: 0.5
+author: taahanis
+commands:
+    saconfig:
+        description: Manage the saconfig list
+        usage: /<command> <add | setrank> <player>
