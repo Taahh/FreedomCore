@@ -27,6 +27,7 @@ public class FreedomCore extends JavaPlugin {
         saveConfig();
 
         cm = new ConnectionManager(this);
+        cm.checkStuff();
         cm.connect();
 
         al = new AdminList(this);

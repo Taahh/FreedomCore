@@ -17,8 +17,8 @@ public class ConnectionManager {
     public MongoClient client;
 
 
-    private String ip, password, username, database;
-    private int port;
+    public String ip, password, username, database;
+    public int port;
 
 
     FreedomCore plugin;
@@ -89,5 +89,13 @@ public class ConnectionManager {
             Bukkit.getLogger().info("PLAYER EXISTS FUNCTION");
         }
         return false;
+    }
+
+    public void checkStuff(){
+        if (database.isEmpty() || ip.isEmpty() || username.isEmpty() || password.isEmpty()){
+            Bukkit.getLogger().info("Cannot start plugin, due to MongoDB information not filled out.");
+            Bukkit.getServer().getPluginManager().disablePlugin(plugin);
+            return;
+        }
     }
 }

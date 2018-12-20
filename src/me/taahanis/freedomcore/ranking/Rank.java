@@ -23,7 +23,7 @@ public enum Rank {
     private Rank(int l, String lM, Type t, String prfx, ChatColor c){
         this.level = l;
         this.loginMsg = lM;
-        this.prefix = c + prfx;
+        this.prefix = ChatColor.DARK_GRAY + "[" + c + prfx + ChatColor.DARK_GRAY + "]";
         this.color = c;
     }
 
@@ -50,7 +50,7 @@ public enum Rank {
         return color + loginMsg;
     }
     public String getPrefix(){
-        return ChatColor.DARK_GRAY + "[" + color + prefix + ChatColor.DARK_GRAY + "]";
+        return prefix;
     }
     public ChatColor getColor() {
         return color;
