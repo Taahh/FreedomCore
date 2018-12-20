@@ -16,10 +16,9 @@ public class FreedomCore extends JavaPlugin {
     public AdminList al;
 
     @Override
-    public void onEnable()
-    {
+    public void onEnable() {
         plugin = this;
-        if (!this.getDataFolder().exists()){
+        if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
 
@@ -27,7 +26,6 @@ public class FreedomCore extends JavaPlugin {
         saveConfig();
 
         cm = new ConnectionManager(this);
-        cm.checkStuff();
         cm.connect();
 
         al = new AdminList(this);
@@ -39,6 +37,7 @@ public class FreedomCore extends JavaPlugin {
 
 
         getCommand("saconfig").setExecutor(new Command_saconfig());
+            MOTDSetter.setPlayerCountMsg();
     }
 
     @Override

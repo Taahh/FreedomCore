@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="spigot-1.12.2-R0.1-SNAPSHOT-b1498" level="project" />
     <orderEntry type="library" name="mongo-java-driver-3.9.1" level="project" />
+    <orderEntry type="library" name="ProtocolLib" level="project" />
   </component>
 </module>

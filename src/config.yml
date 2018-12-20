@@ -5,3 +5,14 @@ database:
     username: ""
     password: ""
     name: ""
+#These fields NEED to be filled in for the SpecialMOTD
+#For version name, it means the "Online" thing, or where it usually says the playercount, you can replace that. Use placeholders $onlineplayers and $maxplayers
+server:
+    motd: "ExampleFreedom &8-&e 1.12.2"
+    website: "https://example.com"
+    lines:
+        - ""
+        - ""
+        - ""
+        - ""
+    versionname: "&cOnline -> $onlineplayers/$maxplayers"

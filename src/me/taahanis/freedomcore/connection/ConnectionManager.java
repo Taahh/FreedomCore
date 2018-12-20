@@ -91,11 +91,4 @@ public class ConnectionManager {
         return false;
     }
 
-    public void checkStuff(){
-        if (database.isEmpty() || ip.isEmpty() || username.isEmpty() || password.isEmpty()){
-            Bukkit.getLogger().info("Cannot start plugin, due to MongoDB information not filled out.");
-            Bukkit.getServer().getPluginManager().disablePlugin(plugin);
-            return;
-        }
-    }
 }
