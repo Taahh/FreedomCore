@@ -1,8 +1,6 @@
 package me.taahanis.freedomcore.connection;
 
 import com.mongodb.*;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import me.taahanis.freedomcore.FreedomCore;
 import org.bson.Document;
 import org.bukkit.Bukkit;
@@ -14,8 +12,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ConnectionManager {
-    public MongoCollection<Document> players, punishments;
-    public MongoDatabase mcserverdb;
+    public DBCollection players, punishments;
+    public DB mcserverdb;
     public MongoClient client;
 
 
@@ -57,7 +55,7 @@ public class ConnectionManager {
             return false;
         }
 
-        mcserverdb = client.getDatabase(database);
+        mcserverdb = client.getDB(database);
         players = mcserverdb.getCollection("players");
         punishments = mcserverdb.getCollection("punishments");
         return true;
@@ -66,22 +64,22 @@ public class ConnectionManager {
 
     public void storePlayer(String uuid, String name, String ip) {
         try {
-            Document doc = new Document("UUID", uuid);
-            Document found = (Document) players.find(doc).first();
-            doc.append("Name", name);
-            doc.append("IP", ip);
-            doc.append("Is_Super", false);
-            doc.append("Is_Telnet", false);
-            doc.append("Is_Senior", false);
-            players.insertOne(doc);
+            DBObject doc = new BasicDBObject("UUID", uuid);
+            DBObject found = players.findOne(doc);
+            doc.put("Name", name);
+            doc.put("IP", ip);
+            doc.put("Is_Super", false);
+            doc.put("Is_Telnet", false);
+            doc.put("Is_Senior", false);
+            players.insert(doc);
         } catch (MongoException e){
             e.printStackTrace();
         }
     }
     public boolean playerExists(String uuid) {
         try {
-            Document doc = new Document("UUID", uuid);
-            Document found = (Document) players.find(doc).first();
+            DBObject doc = new BasicDBObject("UUID", uuid);
+            DBObject found = players.findOne(doc);
             if (found != null){
                 return true;
             }

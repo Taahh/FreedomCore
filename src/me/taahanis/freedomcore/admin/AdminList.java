@@ -1,8 +1,12 @@
 package me.taahanis.freedomcore.admin;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import me.taahanis.freedomcore.FreedomCore;
 import me.taahanis.freedomcore.ranking.Rank;
 import org.bson.Document;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class AdminList
@@ -13,54 +17,110 @@ public class AdminList
     }
 
     public void addAdmin(Player player){
-        Document obj = new Document("UUID", player.getUniqueId().toString());
-        Document r = new Document("UUID", player.getUniqueId().toString());
-        Document found = plugin.cm.players.find(r).first();
-        if (found == null){
+        BasicDBObject obj = new BasicDBObject();
+        obj.append("$set", new BasicDBObject().append("Is_Super", true));
+
+        BasicDBObject searchQuery = new BasicDBObject().append("UUID", player.getUniqueId().toString());
+
+        plugin.cm.players.update(searchQuery, obj);
+    }
+
+    public void removeAdmin(Player player, CommandSender sender){
+        if (!Rank.isAdmin(player)){
+            sender.sendMessage(ChatColor.RED + "Player isn't an admin");
             return;
         }
-        Document set = new Document("$set", r);
-        set.append("$set", new Document("Is_Super", true));
+        if (Rank.isSenior(player)){
+            unsetSenior(player);
+        }
+        if (Rank.isTelnet(player)){
+            unsetTelnet(player);
+        }
+        if (Rank.isSuper(player)){
+            unsetSuper(player);
+        }
 
-        plugin.cm.players.updateOne(found, obj);
     }
+
+
 
     public void setRank(Rank rank, Player player){
         if (rank == Rank.TELNET_ADMIN){
-            Document obj = new Document("UUID", player.getUniqueId().toString());
-            Document r = new Document("UUID", player.getUniqueId().toString());
-            Document found = plugin.cm.players.find(r).first();
-            if (found == null){
-                return;
+            if (Rank.isSuper(player)){
+                unsetSuper(player);
             }
-            obj.put("Is_Super", false);
-            obj.put("Is_Telnet", true);
-            obj.put("Is_Senior", false);
-            plugin.cm.players.updateMany(found, obj);
+            if (Rank.isSenior(player)){
+                unsetSenior(player);
+            }
+            BasicDBObject obj = new BasicDBObject();
+            obj.append("$set", new BasicDBObject().append("Is_Telnet", true));
+
+            BasicDBObject searchQuery = new BasicDBObject().append("UUID", player.getUniqueId().toString());
+
+            plugin.cm.players.update(searchQuery, obj);
+
         }
         if (rank == Rank.SENIOR_ADMIN){
-            Document obj = new Document("UUID", player.getUniqueId().toString());
-            Document r = new Document("UUID", player.getUniqueId().toString());
-            Document found = plugin.cm.players.find(r).first();
-            if (found == null){
-                return;
+            if (Rank.isTelnet(player)){
+                unsetTelnet(player);
             }
-            obj.put("Is_Super", false);
-            obj.put("Is_Telnet", false);
-            obj.put("Is_Senior", true);
-            plugin.cm.players.updateOne(found, obj);
+            if (Rank.isSuper(player)){
+                unsetSuper(player);
+            }
+            BasicDBObject obj = new BasicDBObject();
+            obj.append("$set", new BasicDBObject().append("Is_Senior", true));
+
+            BasicDBObject searchQuery = new BasicDBObject().append("UUID", player.getUniqueId().toString());
+
+            plugin.cm.players.update(searchQuery, obj);
         }
         if (rank == Rank.SUPER_ADMIN){
-            Document obj = new Document("UUID", player.getUniqueId().toString());
-            Document r = new Document("UUID", player.getUniqueId().toString());
-            Document found = plugin.cm.players.find(r).first();
-            if (found == null){
-                return;
+            if (Rank.isSenior(player)) {
+                unsetSenior(player);
             }
-            obj.put("Is_Super", true);
-            obj.put("Is_Telnet", false);
-            obj.put("Is_Senior", false);
-            plugin.cm.players.updateOne(found, obj);
+            if (Rank.isTelnet(player)){
+                unsetTelnet(player);
+            }
+            BasicDBObject obj = new BasicDBObject();
+            obj.append("$set", new BasicDBObject().append("Is_Super", true));
+
+            BasicDBObject searchQuery = new BasicDBObject().append("UUID", player.getUniqueId().toString());
+
+            plugin.cm.players.update(searchQuery, obj);
         }
+    }
+
+
+
+
+
+
+
+
+    //these unset functions are for mongo because it's damn retarded
+    public void unsetSenior(Player player){
+        BasicDBObject obj = new BasicDBObject();
+        obj.append("$set", new BasicDBObject().append("Is_Senior", false));
+
+        BasicDBObject searchQuery = new BasicDBObject().append("UUID", player.getUniqueId().toString());
+
+        plugin.cm.players.update(searchQuery, obj);
+    }
+
+    public void unsetSuper(Player player){
+        BasicDBObject obj = new BasicDBObject();
+        obj.append("$set", new BasicDBObject().append("Is_Super", false));
+
+        BasicDBObject searchQuery = new BasicDBObject().append("UUID", player.getUniqueId().toString());
+
+        plugin.cm.players.update(searchQuery, obj);
+    }
+    public void unsetTelnet(Player player){
+        BasicDBObject obj = new BasicDBObject();
+        obj.append("$set", new BasicDBObject().append("Is_Telnet", false));
+
+        BasicDBObject searchQuery = new BasicDBObject().append("UUID", player.getUniqueId().toString());
+
+        plugin.cm.players.update(searchQuery, obj);
     }
 }

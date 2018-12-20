@@ -1,7 +1,9 @@
 package me.taahanis.freedomcore.ranking;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import me.taahanis.freedomcore.FreedomCore;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 import org.bson.Document;
 import org.bukkit.entity.Player;
 
@@ -21,7 +23,7 @@ public enum Rank {
     private Rank(int l, String lM, Type t, String prfx, ChatColor c){
         this.level = l;
         this.loginMsg = lM;
-        this.prefix = ChatColor.DARK_GRAY + "[" + c + prfx + ChatColor.DARK_GRAY + "]";
+        this.prefix = c + prfx;
         this.color = c;
     }
 
@@ -45,12 +47,11 @@ public enum Rank {
     }
 
     public String getLoginMsg(){
-        return loginMsg;
+        return color + loginMsg;
     }
     public String getPrefix(){
-        return prefix;
+        return ChatColor.DARK_GRAY + "[" + color + prefix + ChatColor.DARK_GRAY + "]";
     }
-
     public ChatColor getColor() {
         return color;
     }
@@ -59,43 +60,33 @@ public enum Rank {
     }
 
     public static boolean isAdmin(Player player){
-        Document doc = new Document("UUID", player.getUniqueId().toString());
-        Document found = FreedomCore.plugin.cm.players.find(doc).first();
-
-        if (found == null){
-            return false;
-        }
-        if (found.getBoolean("Is_Super") || found.getBoolean("Is_Telnet") || found.getBoolean("Is_Senior")){
-            return true;
-        }
-        return false;
+        return isSuper(player) || isTelnet(player) || isSenior(player);
     }
 
     public static boolean isSuper(Player player) {
 
-        Document doc = new Document("UUID", player.getUniqueId().toString());
-        Document found = FreedomCore.plugin.cm.players.find(doc).first();
-        if (found == null){
-            return false;
-        }
+        DBObject query = new BasicDBObject("UUID", player.getUniqueId().toString());
+        DBObject project = new BasicDBObject("Is_Super", true);
 
-        return found.getBoolean("Is_Super");
+        DBObject result = FreedomCore.plugin.cm.players.findOne(query, project);
+        boolean issuper = (boolean) result.get("Is_Super");
+        return issuper;
     }
     public static boolean isTelnet(Player player) {
-        Document doc = new Document("UUID", player.getUniqueId().toString());
-        Document found = (Document) FreedomCore.plugin.cm.players.find(doc).first();
-        if (found == null){
-            return false;
-        }
-        return found.getBoolean("Is_Telnet");
+        DBObject query = new BasicDBObject("UUID", player.getUniqueId().toString());
+        DBObject project = new BasicDBObject("Is_Telnet", true);
+
+        DBObject result = FreedomCore.plugin.cm.players.findOne(query, project);
+        boolean istelnet = (boolean) result.get("Is_Telnet");
+        return istelnet;
     }
     public static boolean isSenior(Player player){
-        Document doc = new Document("UUID", player.getUniqueId().toString());
-        Document found = (Document) FreedomCore.plugin.cm.players.find(doc).first();
-        if (found == null) {
-            return false;
-        }
-        return found.getBoolean("Is_Senior");
+        DBObject query = new BasicDBObject("UUID", player.getUniqueId().toString());
+        DBObject project = new BasicDBObject("Is_Senior", true);
+
+        DBObject result = FreedomCore.plugin.cm.players.findOne(query, project);
+        boolean issenior = (boolean) result.get("Is_Senior");
+        return issenior;
     }
 
 
